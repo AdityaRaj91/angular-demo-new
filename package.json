@@ -26,6 +26,7 @@
     "angular-ng-autocomplete": "^2.0.5",
     "bootstrap": "^5.1.2",
     "jquery": "^3.6.0",
+    "lodash": "^4.17.21",
     "ng-autocomplete": "^1.0.0",
     "ng-connection-service": "^1.0.4",
     "ngx-print": "^1.2.1",
