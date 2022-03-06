@@ -46,6 +46,7 @@ export interface Dashboard {
   EmployeeID: string;
   PageScanned: string;
   Image: string;
+  BlobURL: string;
 }
 
 @Pipe({
@@ -94,6 +95,8 @@ export class GlobalSearchComponent {
   perPage: any;
   photos = [];
   photoList = [];
+  dashboards = [];
+  dashboardList = [];
   extData: any;
   dropdownList = [];
   selectedItems = [];
@@ -125,18 +128,16 @@ export class GlobalSearchComponent {
   keywordCounty = 'County';
   stateList: any;
   cityList: any;
-  ELEMENT_DATA_DISPLAY: Photo[] = [];
+  ELEMENT_DATA_DISPLAY: Dashboard[] = [];
   displayedColumns: string[] = [
-    'Select',
-    'BusniessSegment',
-    'State',
-    'County',
-    'City',
-    'ZipCode',
-    'ExpiryDate',
-    'ShopNumber',
-    'LicenseNumber',
-    'Download',
+    'StoreId',
+    'DocumentType',
+    'DocumentDate',
+    'UploadDateTime',
+    'EmployeeName',
+    'EmployeeID',
+    'PageScanned',
+    'Image',
   ];
   dataSource: any;
   cityZipCode: any;
@@ -148,20 +149,15 @@ export class GlobalSearchComponent {
   color: ThemePalette = 'primary';
   mode: ProgressSpinnerMode = 'determinate';
   value = 50;
-  selection = new SelectionModel<Photo>(true, []);
+  selection = new SelectionModel<Dashboard>(true, []);
+  selectionDashboard = new SelectionModel<Dashboard>(true, []);
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngAfterViewInit() {
     //this.dataSource.paginator = this.paginator;
   }
-  filter() {
-    console.log(this.selectedBusinessNameMain);
-    this.BusinessNameMain = this.BusinessNameMain.filter((s) =>
-      s.includes(this.selectedBusinessNameMain)
-    );
-  }
 
-  ngAfterContentChecked() {
+  /*ngAfterContentChecked() {
     this.cdr.detectChanges();
     const sheet = document.createElement('style');
     sheet.innerHTML = '@page {scale: 70%}';
@@ -174,7 +170,7 @@ export class GlobalSearchComponent {
       this.imgUrl.push(name);
     }
     // console.log(this.imgUrl);
-  }
+  }*/
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     // const numSelected = this.selection.selected.length;
@@ -294,7 +290,9 @@ export class GlobalSearchComponent {
       .subscribe((data) => {
         console.log(data);
         this.dashboardData = data;
+        this.extractDashboardData();
       });
+
     this.httpClient.get('assets/Json/State.json').subscribe((data) => {
       this.StateMain = data;
     });
@@ -335,6 +333,10 @@ export class GlobalSearchComponent {
     let day = date.getDate().toString();
     day = day.length > 1 ? day : '0' + day;
     return year + '-' + month + '-' + day + 'T00:00+00:00';
+  }
+  searchAPIDashbaord() {
+    console.log('=======Search===========');
+    this.extractDashboardData();
   }
   searchAPI() {
     this.xpandStatus = true;
@@ -431,27 +433,30 @@ export class GlobalSearchComponent {
     }
   }
   extractDashboardData() {
-    this.photos = [];
+    this.dashboards = [];
     for (let item of this.dashboardData) {
-        let eData = {
-          StoreId: item.store_id,
-          DocumentType: item.document_type,
-          DocumentDate: item.create_date,
-          UploadDateTime: item.create_date,
-          EmployeeName: item.firstname +" "+item.lastname,
-          EmployeeID: item.employee_id,
-          PageScanned: '',
-          Image: item.thumbnail,
-        };
-        this.photos.push(eData);
+      let eData = {
+        StoreId: item.store_id,
+        DocumentType: item.document_type,
+        DocumentDate: item.create_date,
+        UploadDateTime: item.create_date,
+        EmployeeName: item.firstname + ' ' + item.lastname,
+        EmployeeID: item.employee_id,
+        PageScanned: '',
+        Image: item.thumbnail,
+        BlobURL: item.BlobURL,
+      };
+      console.log(eData);
+      this.dashboards.push(eData);
     }
-    this.photoList = this.photos;
-    this.dataSource = new MatTableDataSource<Photo>(this.photos);
+    this.dashboardList = this.dashboards;
+    console.log('===' + this.dashboardList);
+    this.dataSource = new MatTableDataSource<Dashboard>(this.dashboards);
     this.dataSource.paginator = this.paginator;
-    if (this.photos.length === 0) {
+    if (this.dashboards.length === 0) {
       this.notificationError();
     }
-    //this.selection = new SelectionModel<Photo>(true, []);
+    this.selection = new SelectionModel<Dashboard>(true, []);
 
     this.loadAllAutoComplete();
   }
@@ -498,7 +503,7 @@ export class GlobalSearchComponent {
       lookupZipCode,
       lookupLicenseType,
       lookupShopNumber = {};
-    let items = this.photoList;
+    let items = this.dashboardList;
     let resultCounty,
       resultCity,
       resultZipCode,
@@ -520,10 +525,10 @@ export class GlobalSearchComponent {
             obj['Code'] == name.toUpperCase()
         );
         console.log(bNameFiltered);
-        resultDocumentType.push({
+        /* resultDocumentType.push({
           State: bNameFiltered[0].State,
           Code: bNameFiltered[0].Code,
-        });
+        });*/
       }
     }
     this.DocumentType = resultDocumentType;
@@ -533,7 +538,7 @@ export class GlobalSearchComponent {
       if (!(name in lookup)) {
         lookup[name] = 1;
         result.push(name);
-        let bNameFiltered = this.BusinessNameMain.filter(
+        /*let bNameFiltered = this.BusinessNameMain.filter(
           (obj) =>
             obj['State'].toUpperCase() == name.toUpperCase() ||
             obj['Code'] == name.toUpperCase()
@@ -542,7 +547,7 @@ export class GlobalSearchComponent {
         resultBusiness.push({
           State: bNameFiltered[0].State,
           Code: bNameFiltered[0].Code,
-        });
+        });*/
       }
     }
     this.BusinessName = resultBusiness;
@@ -552,7 +557,7 @@ export class GlobalSearchComponent {
       if (!(name in lookup)) {
         lookup[name] = 1;
         result.push(name);
-        let stateFiltered = this.StateMain.filter(
+        /* let stateFiltered = this.StateMain.filter(
           (obj) =>
             obj['State'].toUpperCase() == name.toUpperCase() ||
             obj['Code'] == name.toUpperCase()
@@ -561,7 +566,7 @@ export class GlobalSearchComponent {
         resultState.push({
           State: stateFiltered[0].State,
           Code: stateFiltered[0].Code,
-        });
+        });*/
       }
     }
     this.State = resultState;
@@ -1272,7 +1277,7 @@ export class GlobalSearchComponent {
     this.selectedExpiryDate = '';
     this.selectedDocumentType = '';
     this.photos = [];
-    this.dataSource = new MatTableDataSource<Photo>(this.photos);
+    this.dataSource = new MatTableDataSource<Dashboard>(this.dashboards);
     this.dataSource.paginator = this.paginator;
     this.loadAllAutoComplete();
   }
