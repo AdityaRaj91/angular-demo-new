@@ -37,6 +37,16 @@ export interface Photo {
   County: string;
   BusinessName: string;
 }
+export interface Dashboard {
+  StoreId: string;
+  DocumentType: string;
+  DocumentDate: string;
+  UploadDateTime: string;
+  EmployeeName: string;
+  EmployeeID: string;
+  PageScanned: string;
+  Image: string;
+}
 
 @Pipe({
   name: 'unique',
@@ -419,6 +429,31 @@ export class GlobalSearchComponent {
           this.extractData();
         });
     }
+  }
+  extractDashboardData() {
+    this.photos = [];
+    for (let item of this.dashboardData) {
+        let eData = {
+          StoreId: item.store_id,
+          DocumentType: item.document_type,
+          DocumentDate: item.create_date,
+          UploadDateTime: item.create_date,
+          EmployeeName: item.firstname +" "+item.lastname,
+          EmployeeID: item.employee_id,
+          PageScanned: '',
+          Image: item.thumbnail,
+        };
+        this.photos.push(eData);
+    }
+    this.photoList = this.photos;
+    this.dataSource = new MatTableDataSource<Photo>(this.photos);
+    this.dataSource.paginator = this.paginator;
+    if (this.photos.length === 0) {
+      this.notificationError();
+    }
+    //this.selection = new SelectionModel<Photo>(true, []);
+
+    this.loadAllAutoComplete();
   }
   extractData() {
     this.photos = [];
