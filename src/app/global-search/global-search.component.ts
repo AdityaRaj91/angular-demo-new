@@ -449,6 +449,14 @@ export class GlobalSearchComponent {
       console.log(eData);
       this.dashboards.push(eData);
     }
+    if (this.selectedShopNumberMain) {
+      this.dashboards = this.dashboards.filter((v) =>
+        JSON.stringify(v)
+          .toLowerCase()
+          .includes(this.selectedShopNumberMain.toLowerCase())
+      );
+      console.log('Size=' + this.dashboards.length);
+    }
     this.dashboardList = this.dashboards;
     console.log('===' + this.dashboardList);
     this.dataSource = new MatTableDataSource<Dashboard>(this.dashboards);
