@@ -14,8 +14,8 @@ import { HttpClient } from '@angular/common/http';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+//import { Observable } from 'rxjs';
+//import { map, startWith } from 'rxjs/operators';
 import * as _ from 'lodash';
 export interface PeriodicElement {
   name: string;
@@ -24,18 +24,6 @@ export interface PeriodicElement {
   symbol: string;
 }
 export interface Photo {
-  ExpiryDate: string;
-  LicenseNumber: string;
-  ShopNumber: string;
-  State: string;
-  Address: string;
-  ZipCode: string;
-  Merged_Content: string;
-  City: string;
-  Url: string;
-  LicenseType: string;
-  County: string;
-  BusinessName: string;
 }
 export interface Dashboard {
   StoreId: string;
@@ -185,7 +173,7 @@ export class GlobalSearchComponent {
     }
     return numSelected === numRows;
   }
-  onBSegmentChange(event) {
+ /* onBSegmentChange(event) {
     this.selectedBusinessNameMain = event.value;
   }
   onStateChange(event) {
@@ -193,7 +181,7 @@ export class GlobalSearchComponent {
   }
   onLicenseTypeChange(event) {
     this.selectedLicenseTypeMain = event.value;
-  }
+  }*/
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
     this.isAllSelected()
@@ -276,12 +264,12 @@ export class GlobalSearchComponent {
     return filteredData;
   }
   loadBSegment() {
-    this.httpClient.get('assets/Json/DocumentType.json').subscribe((data) => {
+    /*this.httpClient.get('assets/Json/DocumentType.json').subscribe((data) => {
       this.DocumentTypeMain = data;
     });
     this.httpClient.get('assets/Json/BSegment.json').subscribe((data) => {
       this.BusinessNameMain = data;
-    });
+    });*/
     this.httpClient
       .post<any>(
         'https://alpha-functionapp.azurewebsites.net/api/httptriggergetmetadata',

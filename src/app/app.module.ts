@@ -22,6 +22,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+
 @NgModule({
   declarations: [AppComponent, GlobalSearchComponent],
   imports: [
@@ -32,6 +34,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     ConnectionServiceModule,
     AutocompleteLibModule,
+    MatToolbarModule,
     MatExpansionModule,
     MatTableModule,
     MatCheckboxModule,
