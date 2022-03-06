@@ -95,6 +95,7 @@ export class GlobalSearchComponent {
   BusinessName: any;
   DocumentType: any;
   BusinessNameMain: any;
+  dashboardData: any;
   DocumentTypeMain: any;
   State: any;
   StateMain: any;
@@ -143,6 +144,13 @@ export class GlobalSearchComponent {
   ngAfterViewInit() {
     //this.dataSource.paginator = this.paginator;
   }
+  filter() {
+    console.log(this.selectedBusinessNameMain);
+    this.BusinessNameMain = this.BusinessNameMain.filter((s) =>
+      s.includes(this.selectedBusinessNameMain)
+    );
+  }
+
   ngAfterContentChecked() {
     this.cdr.detectChanges();
     const sheet = document.createElement('style');
@@ -268,6 +276,15 @@ export class GlobalSearchComponent {
     this.httpClient.get('assets/Json/BSegment.json').subscribe((data) => {
       this.BusinessNameMain = data;
     });
+    this.httpClient
+      .post<any>(
+        'https://alpha-functionapp.azurewebsites.net/api/httptriggergetmetadata',
+        { maxRecordCount: 20 }
+      )
+      .subscribe((data) => {
+        console.log(data);
+        this.dashboardData = data;
+      });
     this.httpClient.get('assets/Json/State.json').subscribe((data) => {
       this.StateMain = data;
     });
