@@ -25,7 +25,7 @@ input[type='text'] {
 table {
   width: 100%;
 }
-.cvsBGColor {
+.buttonColor {
   background-color: #cc0000;
   color: #fff;
   border-color: transparent;
